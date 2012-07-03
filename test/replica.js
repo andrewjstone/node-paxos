@@ -47,13 +47,27 @@ describe('ensure cluster forms correctly', function() {
     }, 1000);
   });
 
-  it('127.0.0.1:11529 is elected as a leader', function(done) {
-    this.timeout(5000);
+  it('replica3 (127.0.0.1:11529) is elected as a leader', function(done) {
     setTimeout(function() {
       assert.equal(replica1.leader, '127.0.0.1:11529');
       assert.equal(replica2.leader, '127.0.0.1:11529');
       assert.equal(replica3.leader, '127.0.0.1:11529');
       done();
-    }, 4500);
+    }, 1000);
+  });
+});
+
+describe('leader is stopped', function() {
+  it('stop replica3 (127.0.0.1:11529)', function(done) {
+    replica3.stop();
+    setTimeout(function() {
+      done();
+    }, 1000);
+  });
+
+  it('replica2 is elected as leader', function() {
+      assert.equal(replica1.leader, '127.0.0.1:11528');
+      assert.equal(replica2.leader, '127.0.0.1:11528');
+      assert.equal(replica3.leader, null);
   });
 });
