@@ -20,16 +20,34 @@ describe('append to the oplog', function() {
 describe('play the oplog', function() {
   it('emits only one transaction', function(done) {
     var txct = 0;
-    oplog.on('data', function(data) {
+    var stream = oplog.play();
+    stream.on('data', function(data) {
       txct++;
       assert.equal(data.txid, txid);
       assert.equal(data.ops, op1);
     });
-    oplog.on('end', function() {
+    stream.on('end', function() {
       assert.equal(txct, 1);
       done();
     });
-    oplog.play();
   });
 });
 
+describe('append another transaction with two ops', function() {
+  it('succeeds', function(done) {
+    oplog.append(++txid, 's table2 key1 value1\ns table2 key2 value2\n', done);
+  });
+
+  it('playing the oplog again will emit 2 transcations', function(done) {
+    var txct = 0;
+    var stream = oplog.play();
+    stream.on('data', function(data) {
+      txct++;
+      assert.equal(data.txid, txct);
+    });
+    stream.on('end', function() {
+      assert.equal(txct, 2);
+      done();
+    });
+  });
+});
