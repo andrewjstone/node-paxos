@@ -8,12 +8,13 @@ try {
 }
 
 var oplog = new Oplog('./output/testOplog.log');
+var epoch = 1;
 var txid = 1;
 var op1 = 's table1 key value\n';
 
 describe('append to the oplog', function() {
   it('succeeds', function(done) {
-    oplog.append(txid, op1, done);
+    oplog.append(epoch, txid, op1, done);
   });
 });
 
@@ -35,7 +36,7 @@ describe('play the oplog', function() {
 
 describe('append another transaction with two ops', function() {
   it('succeeds', function(done) {
-    oplog.append(++txid, 's table2 key1 value1\ns table2 key2 value2\n', done);
+    oplog.append(epoch, ++txid, 's table2 key1 value1\ns table2 key2 value2\n', done);
   });
 
   it('playing the oplog again will emit 2 transcations', function(done) {
