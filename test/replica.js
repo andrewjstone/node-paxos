@@ -37,8 +37,10 @@ describe('create a cluster of three replicas', function() {
 describe('ensure cluster forms correctly', function() {
   it('replicas are connected', function(done) {
     setTimeout(function() {
-      assert(replica1.group.members['127.0.0.1:11528'].endpoint);
-      assert(replica1.group.members['127.0.0.1:11529'].endpoint);
+      assert(replica1.group.members['127.0.0.1:11528'].endpoint.socket.writable);
+      assert(replica1.group.members['127.0.0.1:11528'].endpoint.socket.readable);
+      assert(replica1.group.members['127.0.0.1:11529'].endpoint.socket.writable);
+      assert(replica1.group.members['127.0.0.1:11529'].endpoint.socket.readable);
       done();
     }, 1000);
   });
